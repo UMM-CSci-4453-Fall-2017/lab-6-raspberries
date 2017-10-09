@@ -2,7 +2,7 @@ var credentials = require('./credentials.json');
 
 var mysql=require("mysql");
 		
-
+// array of database objects
 var databases = [];
 
 credentials.host="ids";
@@ -16,6 +16,7 @@ connection.connect(function(err) {
 	}
 });
 
+// creates a database object for each database
 function getDatabaseNames(rows) {
 	for(var i = 0; i < rows.length; i++) {
 		var database = new Object();
@@ -25,6 +26,8 @@ function getDatabaseNames(rows) {
 	}
 }
 
+// adds table names to database object
+// calls getTabeDescription for each table
 function getTableNames(rows, index) {
 	for(var i = 0; i < rows.length; i++) {
 		function outer2(i) {
@@ -36,6 +39,9 @@ function getTableNames(rows, index) {
 	}
 }
 
+// calls DESCRIBE for each table
+// calls detDescription for each table column
+// prints everything
 function getTableDescription(databaseIndex, tableIndex) {
 	connection.query('DESCRIBE ' + databases[databaseIndex].title + ".`" + databases[databaseIndex].tables[tableIndex] + "`", function(err,rows,fields){
 		if(err){
@@ -51,6 +57,8 @@ function getTableDescription(databaseIndex, tableIndex) {
 	});
 }
 
+// formats table descriptions for output correctly
+// connection ends here
 function getDescription(rows,databaseIndex,tableIndex)
 {
 	var text = "";
@@ -66,6 +74,8 @@ function getDescription(rows,databaseIndex,tableIndex)
 	return text;
 }
 
+// uses a query to get databases
+// calls getTables with callback getDatabaseNames
 function getDatabases() {
 	connection.query('SHOW DATABASES', function(err,rows,fields){
 		if(err){
@@ -77,6 +87,7 @@ function getDatabases() {
 			
 }
 
+// calls GetTable for each database
 function getTables() {
 	var i;
 	for(i = 0; i < databases.length; i++)
@@ -90,7 +101,7 @@ function getTables() {
 }
 
 
-
+// calls getTableNames for a database
 function getTable(index) {
 	connection.query('SHOW TABLES FROM ' + databases[index].title, function(err,rows,fields){
 		if(err){
@@ -103,7 +114,9 @@ function getTable(index) {
 }
 
 
-getDatabases(getTables);
+// script starts here
+// calls getDatabases 
+getDatabases();
 
 console.log("All done now.");
 
