@@ -1,0 +1,3 @@
+database: rich1143 amd mitc0417
+group: raspberries
+members: Sydney Richards and Sophia Mitchellette
